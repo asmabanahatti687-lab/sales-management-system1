@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Management System</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for interactive analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        primaryHover: '#1D4ED8',
+                        lightBg: '#F4F7FB'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-lightBg text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- ================= AUTHENTICATION CONTAINER ================= -->
+    <div id="auth-container" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 overflow-hidden transform transition-all">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-primary rounded-2xl mb-4 text-2xl font-bold">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900" id="auth-title">Welcome Back</h1>
+                <p class="text-sm text-slate-500 mt-1">Sign in to Sales Management System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Email or Username</label>
+                    <input type="text" id="login-user" required value="admin" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="login-pass" required value="admin123" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        <button type="button" onclick="togglePassword('login-pass')" class="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center"><input type="checkbox" class="rounded border-slate-300 text-primary focus:ring-primary mr-2"> Remember me</label>
+                    <a href="#" onclick="alert('Demo reminder: Use admin / admin123')" class="text-primary hover:underline">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primaryHover transition shadow-lg shadow-blue-500/25">Sign In</button>
+                
+                <div class="mt-4 p-3 bg-slate-50 rounded-lg text-xs text-slate-600 border border-slate-200">
+                    <p class="font-semibold mb-1">Demo Credentials:</p>
+                    <p>Admin: <code class="bg-white px-1 py-0.5 rounded border border-slate-200">admin / admin123</code></p>
+                    <p>Staff: <code class="bg-white px-1 py-0.5 rounded border border-slate-200">staff / staff123</code></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP LAYOUT ================= -->
+    <div id="app-container" class="flex-1 flex hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col fixed inset-y-0 z-40 transition-transform -translate-x-full lg:translate-x-0">
+            <div class="h-16 flex items-center px-6 border-b border-slate-200">
+                <span class="text-xl font-bold text-primary flex items-center gap-2"><i class="fa-solid fa-box-open"></i> SalesPro</span>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition active">
+                    <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+                </button>
+                <button onclick="switchTab('orders')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-cart-shopping w-5"></i> Sales Orders
+                </button>
+                <button onclick="switchTab('create-order')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-file-circle-plus w-5"></i> Create Order
+                </button>
+                <button onclick="switchTab('invoices')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-file-invoice-dollar w-5"></i> Invoices
+                </button>
+                <button onclick="switchTab('customers')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-users w-5"></i> Customers
+                </button>
+                <button onclick="switchTab('products')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-boxes-stacked w-5"></i> Products & Stock
+                </button>
+                <button onclick="switchTab('reports')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-chart-line w-5"></i> Sales Reports
+                </button>
+                <button onclick="switchTab('payments')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-credit-card w-5"></i> Payments
+                </button>
+                <button onclick="switchTab('audit')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-600 hover:bg-blue-50 hover:text-primary transition">
+                    <i class="fa-solid fa-shield-halved w-5"></i> Audit Logs
+                </button>
+            </div>
+            <div class="p-4 border-t border-slate-200">
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 font-medium transition text-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="flex-1 lg:ml-64 flex flex-col min-w-0">
+            <!-- Top Nav -->
+            <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-600 hover:text-primary text-xl"><i class="fa-solid fa-bars"></i></button>
+                    <h2 id="current-page-title" class="text-xl font-bold text-slate-900">Dashboard</h2>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p id="user-display-name" class="text-sm font-semibold text-slate-800">System Admin</p>
+                        <p id="user-display-role" class="text-xs text-primary font-medium">Administrator</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-primary flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <main class="flex-1 p-6 overflow-y-auto">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <div id="view-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-primary">
+                            <p class="text-sm text-slate-500 font-medium">Total Revenue</p>
+                            <h3 id="stat-revenue" class="text-2xl font-bold text-slate-900 mt-2">$0.00</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                            <p class="text-sm text-slate-500 font-medium">Total Orders</p>
+                            <h3 id="stat-orders" class="text-2xl font-bold text-slate-900 mt-2">0</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
+                            <p class="text-sm text-slate-500 font-medium">Pending Orders</p>
+                            <h3 id="stat-pending" class="text-2xl font-bold text-slate-900 mt-2">0</h3>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+                            <p class="text-sm text-slate-500 font-medium">Low Stock Alerts</p>
+                            <h3 id="stat-lowstock" class="text-2xl font-bold text-slate-900 mt-2">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-lg text-slate-900 mb-4">Revenue Trends</h3>
+                            <canvas id="revenueChart" height="200"></canvas>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-lg text-slate-900 mb-4">Stock Levels by Product</h3>
+                            <canvas id="stockChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SALES ORDERS VIEW -->
+                <div id="view-orders" class="space-y-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Sales Orders List</h3>
+                        <button onclick="switchTab('create-order')" class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primaryHover transition">New Order</button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                                    <th class="p-4">Order No</th>
+                                    <th class="p-4">Customer</th>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4">Total</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. CREATE ORDER VIEW -->
+                <div id="view-create-order" class="space-y-6 hidden">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-2xl mx-auto">
+                        <h3 class="text-lg font-bold mb-4">Create Sales Order</h3>
+                        <form onsubmit="handleCreateOrder(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Select Customer</label>
+                                <select id="order-customer" required class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary text-sm"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Select Product</label>
+                                <select id="order-product" required class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary text-sm"></select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Quantity</label>
+                                    <input type="number" id="order-qty" min="1" value="1" required class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Tax Rate (%)</label>
+                                    <input type="number" id="order-tax" value="5" step="0.1" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary text-sm">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primaryHover transition">Confirm & Deduct Stock</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 4. INVOICE VIEW -->
+                <div id="view-invoices" class="space-y-6 hidden">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-3xl mx-auto" id="invoice-printable">
+                        <div class="flex justify-between border-b pb-6 mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-primary">INVOICE</h2>
+                                <p class="text-xs text-slate-500 mt-1" id="inv-no">#ORD-1001</p>
+                            </div>
+                            <div class="text-right">
+                                <h4 class="font-bold">SalesPro Inc.</h4>
+                                <p class="text-xs text-slate-500">support@salespro.com</p>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Billed To:</p>
+                            <p id="inv-customer" class="font-semibold text-slate-800">Acme Corp</p>
+                            <p id="inv-date" class="text-xs text-slate-500">Date: 2026-10-16</p>
+                        </div>
+                        <table class="w-full mb-6 text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 border-b text-xs uppercase text-slate-500">
+                                    <th class="p-3 text-left">Product</th>
+                                    <th class="p-3 text-center">Qty</th>
+                                    <th class="p-3 text-right">Price</th>
+                                    <th class="p-3 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inv-items-body" class="divide-y"></tbody>
+                        </table>
+                        <div class="flex justify-end">
+                            <div class="w-64 space-y-2 text-sm">
+                                <div class="flex justify-between"><span>Subtotal:</span><span id="inv-subtotal">$0.00</span></div>
+                                <div class="flex justify-between"><span>Tax:</span><span id="inv-tax">$0.00</span></div>
+                                <div class="flex justify-between font-bold text-base border-t pt-2"><span>Total:</span><span id="inv-total">$0.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="window.print()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-900 transition"><i class="fa-solid fa-print mr-2"></i> Print Invoice</button>
+                    </div>
+                </div>
+
+                <!-- 5. CUSTOMERS VIEW -->
+                <div id="view-customers" class="space-y-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Customer Management</h3>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                                    <th class="p-4">Name</th>
+                                    <th class="p-4">Email</th>
+                                    <th class="p-4">Phone</th>
+                                    <th class="p-4">Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 6. PRODUCTS & INVENTORY VIEW -->
+                <div id="view-products" class="space-y-6 hidden">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold">Product Catalog & Stock</h3>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                                    <th class="p-4">Code</th>
+                                    <th class="p-4">Product Name</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Stock</th>
+                                    <th class="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 7. REPORTS VIEW -->
+                <div id="view-reports" class="space-y-6 hidden">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold mb-4">Sales Analytics & Export</h3>
+                        <p class="text-sm text-slate-500 mb-4">Export real-time sales transactions to CSV format.</p>
+                        <button onclick="exportCSV()" class="bg-primary text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-primaryHover transition"><i class="fa-solid fa-download mr-2"></i> Download CSV Report</button>
+                    </div>
+                </div>
+
+                <!-- 8. PAYMENTS VIEW -->
+                <div id="view-payments" class="space-y-6 hidden">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                                    <th class="p-4">Order No</th>
+                                    <th class="p-4">Amount</th>
+                                    <th class="p-4">Method</th>
+                                    <th class="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 9. AUDIT LOGS VIEW -->
+                <div id="view-audit" class="space-y-6 hidden">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-semibold">
+                                    <th class="p-4">Timestamp</th>
+                                    <th class="p-4">User</th>
+                                    <th class="p-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-table-body" class="divide-y divide-slate-200 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Expanded Mock Database State with additional products
+        let db = {
+            users: [
+                { username: 'admin', pass: 'admin123', role: 'Admin', name: 'System Administrator' },
+                { username: 'staff', pass: 'staff123', role: 'Staff', name: 'Sales Associate' }
+            ],
+            products: [
+                { code: 'PRD-101', name: 'Enterprise Cloud Server', category: 'Infrastructure', price: 1200.00, stock: 15, minStock: 5 },
+                { code: 'PRD-102', name: 'Secure VPN Router', category: 'Hardware', price: 250.00, stock: 40, minStock: 10 },
+                { code: 'PRD-103', name: 'Database Backup Suite', category: 'Software', price: 450.00, stock: 8, minStock: 5 },
+                { code: 'PRD-104', name: 'Wireless Access Point', category: 'Hardware', price: 120.00, stock: 25, minStock: 8 },
+                { code: 'PRD-105', name: 'IT Consulting (Hourly)', category: 'Services', price: 150.00, stock: 100, minStock: 20 },
+                { code: 'PRD-106', name: 'Cybersecurity Firewall', category: 'Hardware', price: 850.00, stock: 12, minStock: 4 },
+                { code: 'PRD-107', name: 'Project Management SaaS', category: 'Software', price: 300.00, stock: 50, minStock: 10 },
+                { code: 'PRD-108', name: 'Dedicated Storage Node', category: 'Infrastructure', price: 1500.00, stock: 6, minStock: 2 }
+            ],
+            customers: [
+                { name: 'Acme Corp', email: 'contact@acme.com', phone: '+1-555-0192', address: '123 Innovation Drive' },
+                { name: 'Globex Corporation', email: 'info@globex.org', phone: '+1-555-8391', address: '456 Industrial Pkwy' }
+            ],
+            orders: [
+                { orderNo: 'ORD-1001', customerName: 'Acme Corp', date: '2026-10-15', status: 'Delivered', subtotal: 1200.00, tax: 60.00, total: 1260.00, items: [{ name: 'Enterprise Cloud Server', qty: 1, price: 1200.00 }] }
+            ],
+            payments: [
+                { orderNo: 'ORD-1001', amount: 1260.00, method: 'Credit Card', status: 'Paid' }
+            ],
+            auditLogs: [
+                { timestamp: '2026-10-16 08:00:00', user: 'admin', action: 'System initialized successfully with expanded product catalog' }
+            ]
+        };
+
+        let currentUser = null;
+        let revenueChartInst = null;
+        let stockChartInst = null;
+
+        // Authentication Handler
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+
+            const found = db.users.find(x => x.username === u && x.pass === p);
+            if (found) {
+                currentUser = found;
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = found.name;
+                document.getElementById('user-display-role').innerText = found.role;
+                logAction(found.username, 'User logged in');
+                refreshAll();
+            } else {
+                alert('Invalid username or password.');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('app-container').classList.add('hidden');
+        }
+
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        function logAction(user, action) {
+            const time = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            db.auditLogs.unshift({ timestamp: time, user, action });
+        }
+
+        // Navigation Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-blue-50', 'text-primary'));
+            event.currentTarget.classList.add('bg-blue-50', 'text-primary');
+
+            const titles = {
+                dashboard: 'Dashboard', orders: 'Sales Orders', 'create-order': 'Create Order',
+                invoices: 'Invoice Management', customers: 'Customer Management', products: 'Product & Inventory',
+                reports: 'Sales Reports', payments: 'Payment Tracking', audit: 'Security Audit Logs'
+            };
+            document.getElementById('current-page-title').innerText = titles[tabId] || 'Dashboard';
+            if(tabId === 'dashboard') renderCharts();
+        }
+
+        // Data Rendering & Management
+        function refreshAll() {
+            renderDashboardStats();
+            renderOrders();
+            renderCreateOrderDropdowns();
+            renderCustomers();
+            renderProducts();
+            renderPayments();
+            renderAudit();
+        }
+
+        function renderDashboardStats() {
+            const totalRev = db.orders.reduce((acc, o) => acc + o.total, 0);
+            const totalOrd = db.orders.length;
+            const pendingOrd = db.orders.filter(o => o.status === 'Pending').length;
+            const lowStock = db.products.filter(p => p.stock <= p.minStock).length;
+
+            document.getElementById('stat-revenue').innerText = `$${totalRev.toFixed(2)}`;
+            document.getElementById('stat-orders').innerText = totalOrd;
+            document.getElementById('stat-pending').innerText = pendingOrd;
+            document.getElementById('stat-lowstock').innerText = lowStock;
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = db.orders.map(o => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-semibold text-primary">${o.orderNo}</td>
+                    <td class="p-4">${o.customerName}</td>
+                    <td class="p-4 text-slate-500">${o.date}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">${o.status}</span></td>
+                    <td class="p-4 font-bold">$${o.total.toFixed(2)}</td>
+                    <td class="p-4 text-right">
+                        <button onclick="viewInvoice('${o.orderNo}')" class="text-primary hover:underline font-medium text-xs">View Invoice</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderCreateOrderDropdowns() {
+            document.getElementById('order-customer').innerHTML = db.customers.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            document.getElementById('order-product').innerHTML = db.products.map(p => `<option value="${p.code}">${p.name} ($${p.price} - Stock: ${p.stock})</option>`).join('');
+        }
+
+        function handleCreateOrder(e) {
+            e.preventDefault();
+            const cust = document.getElementById('order-customer').value;
+            const prodCode = document.getElementById('order-product').value;
+            const qty = parseInt(document.getElementById('order-qty').value);
+            const taxRate = parseFloat(document.getElementById('order-tax').value) / 100;
+
+            const product = db.products.find(p => p.code === prodCode);
+            if (product.stock < qty) {
+                alert(`Insufficient stock! Available: ${product.stock}`);
+                return;
+            }
+
+            product.stock -= qty;
+            const subtotal = product.price * qty;
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            const orderNo = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+            const date = new Date().toISOString().substring(0, 10);
+
+            db.orders.push({ orderNo, customerName: cust, date, status: 'Pending', subtotal, tax, total, items: [{ name: product.name, qty, price: product.price }] });
+            db.payments.push({ orderNo, amount: total, method: 'Credit Card', status: 'Pending' });
+
+            logAction(currentUser.username, `Created order ${orderNo} for ${cust}`);
+            alert(`Order ${orderNo} created successfully! Inventory updated.`);
+            refreshAll();
+            switchTab('orders');
+        }
+
+        function viewInvoice(orderNo) {
+            const o = db.orders.find(x => x.orderNo === orderNo);
+            if(!o) return;
+            document.getElementById('inv-no').innerText = `#${o.orderNo}`;
+            document.getElementById('inv-customer').innerText = o.customerName;
+            document.getElementById('inv-date').innerText = `Date: ${o.date}`;
+            document.getElementById('inv-subtotal').innerText = `$${o.subtotal.toFixed(2)}`;
+            document.getElementById('inv-tax').innerText = `$${o.tax.toFixed(2)}`;
+            document.getElementById('inv-total').innerText = `$${o.total.toFixed(2)}`;
+
+            document.getElementById('inv-items-body').innerHTML = o.items.map(i => `
+                <tr>
+                    <td class="p-3">${i.name}</td>
+                    <td class="p-3 text-center">${i.qty}</td>
+                    <td class="p-3 text-right">$${i.price.toFixed(2)}</td>
+                    <td class="p-3 text-right font-semibold">$${(i.qty * i.price).toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            switchTab('invoices');
+        }
+
+        function renderCustomers() {
+            document.getElementById('customers-table-body').innerHTML = db.customers.map(c => `
+                <tr>
+                    <td class="p-4 font-semibold">${c.name}</td>
+                    <td class="p-4 text-slate-500">${c.email}</td>
+                    <td class="p-4">${c.phone}</td>
+                    <td class="p-4 text-slate-500">${c.address}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderProducts() {
+            document.getElementById('products-table-body').innerHTML = db.products.map(p => `
+                <tr>
+                    <td class="p-4 font-mono text-xs font-bold text-primary">${p.code}</td>
+                    <td class="p-4 font-semibold">${p.name}</td>
+                    <td class="p-4 text-slate-500">${p.category}</td>
+                    <td class="p-4">$${p.price.toFixed(2)}</td>
+                    <td class="p-4 font-bold">${p.stock}</td>
+                    <td class="p-4">${p.stock <= p.minStock ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">Low Stock</span>' : '<span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-semibold">In Stock</span>'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPayments() {
+            document.getElementById('payments-table-body').innerHTML = db.payments.map(p => `
+                <tr>
+                    <td class="p-4 font-semibold text-primary">${p.orderNo}</td>
+                    <td class="p-4 font-bold">$${p.amount.toFixed(2)}</td>
+                    <td class="p-4">${p.method}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">${p.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAudit() {
+            document.getElementById('audit-table-body').innerHTML = db.auditLogs.map(a => `
+                <tr>
+                    <td class="p-4 font-mono text-xs text-slate-500">${a.timestamp}</td>
+                    <td class="p-4 font-semibold">${a.user}</td>
+                    <td class="p-4 text-slate-700">${a.action}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportCSV() {
+            let csv = 'OrderNo,Customer,Date,Status,Total\n';
+            db.orders.forEach(o => {
+                csv += `${o.orderNo},"${o.customerName}",${o.date},${o.status},${o.total}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'sales_report.csv');
+            a.click();
+        }
+
+        function renderCharts() {
+            if(revenueChartInst) revenueChartInst.destroy();
+            if(stockChartInst) stockChartInst.destroy();
+
+            const ctxRev = document.getElementById('revenueChart').getContext('2d');
+            revenueChartInst = new Chart(ctxRev, {
+                type: 'line',
+                data: {
+                    labels: db.orders.map(o => o.date),
+                    datasets: [{ label: 'Revenue ($)', data: db.orders.map(o => o.total), borderColor: '#2563EB', backgroundColor: 'rgba(37, 99, 235, 0.1)', fill: true, tension: 0.3 }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            const ctxStock = document.getElementById('stockChart').getContext('2d');
+            stockChartInst = new Chart(ctxStock, {
+                type: 'bar',
+                data: {
+                    labels: db.products.map(p => p.name),
+                    datasets: [{ label: 'Stock Quantity', data: db.products.map(p => p.stock), backgroundColor: '#3B82F6' }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+        }
+    </script>
+</body>
+</html>
