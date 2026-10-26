@@ -6,7 +6,7 @@ A modern, responsive, user-friendly, and feature-complete **Sales Management Sys
 
 ## 🌐 Live Demo & Repository
 
-* **Live Website:** [https://your-deployed-url.com]( https://asmabanahatti687-lab.github.io/sales-management-system1/) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
+* **Live Website:** [ https://asmabanahatti687-lab.github.io/sales-management-system1/]( https://asmabanahatti687-lab.github.io/sales-management-system1/) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
 * **GitHub Repository:** `https://github.com/your-username/sales-management-system.git`
 
 ---
