@@ -1,56 +1,72 @@
-# 📦 Sales Management System (SalesPro)
+# 📦 SalesPro – Modern Sales Management & Inventory System Frontend
 
-A modern, responsive, user-friendly, and feature-complete **Sales Management System** website built with HTML5, Tailwind CSS, JavaScript (ES6+), and Chart.js. This system empowers businesses to efficiently manage sales orders, customer profiles, product catalogs, inventory stock levels, printable invoices, payment statuses, and security audit logs directly in the browser.
+SalesPro is a fully responsive, feature-rich modern web frontend for a Sales Management, Order Processing, and Inventory Tracking platform. Built with **Tailwind CSS**, **Chart.js**, **Font Awesome**, and vanilla **JavaScript (ES6+)**, it provides a complete simulated enterprise sales and logistics management experience directly in the browser.
 
 ---
 
 ## 🌐 Live Demo & Repository
 
-* **Live Website:** [ https://asmabanahatti687-lab.github.io/sales-management-system1/]( https://asmabanahatti687-lab.github.io/sales-management-system1/) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
-* **GitHub Repository:** `https://github.com/your-username/sales-management-system.git`
+*   **Live Website:** [https://your-deployed-url.com](https://your-deployed-url.com) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
+*   **GitHub Repository:** `https://github.com/your-username/salespro-management-system.git`
 
 ---
 
 ## ✨ Key Features & Functionality
 
-* **1. Secure Authentication & Role-Based Access Control:**
-  * Clean login interface supporting role differentiation (**Admin** vs. **Staff**).
-  * Show/hide password toggle and session state tracking.
-* **2. Professional Business Dashboard:**
-  * Real-time KPI metrics tracking Total Revenue, Total Orders, Pending Orders, and Low Stock Alerts.
-  * Interactive Chart.js visualizations displaying Revenue Trends and Stock Levels by Product.
-* **3. Sales Order & Stock Management:**
-  * Complete order creation module allowing users to select customers and products, adjust quantities, apply discounts, and configure tax rates.
-  * Automatic inventory deduction and low-stock threshold alerts to prevent overselling.
-  * Order fulfillment status tracking (`Pending`, `Processing`, `Shipped`, `Delivered`, `Cancelled`).
-* **4. Invoice Management & Printing:**
-  * Automated invoice generation from valid sales orders containing business details, item lists, tax computations, and final balances.
-  * One-click browser print integration for physical or PDF printing.
-* **5. Customer & Product Catalog Management:**
-  * Comprehensive customer directory storing contact numbers, emails, and billing addresses.
-  * Expanded pre-seeded product catalog categorized across Infrastructure, Hardware, Software, and Services.
-* **6. Sales Reports & CSV Export:**
-  * Real-time sales summary analytics and one-click export of order records to CSV format.
-* **7. Payment Tracking & Security Audit Logs:**
-  * Ledger tracking payment methods, amounts, and statuses (`Pending`, `Paid`, `Partially Paid`, `Refunded`).
-  * Immutable security audit log recording administrative actions and user login sessions.
+*   **1. Authentication & Role-Based Access Control:**
+    *   Simulated user login supporting **Admin** (`admin` / `admin123`) and **Staff** (`staff` / `staff123`) roles.
+    *   Password visibility toggling and login prompt credentials helper.
+    *   Role-aware UI header updates and session tracking.
+
+*   **2. Interactive Business Dashboard:**
+    *   Real-time KPI metrics cards tracking Total Revenue, Total Orders, Pending Orders, and Low Stock Alerts.
+    *   **Chart.js** dynamic revenue trends line chart and product stock quantity bar chart.
+
+*   **3. Sales Order & Inventory Management:**
+    *   Create new sales orders by selecting registered customers, products, quantities, and customizable tax rates.
+    *   Automatic real-time stock deduction upon order creation with insufficient stock prevention warnings.
+    *   Order list view with order tracking and status updates (`Pending`, `Processing`, `Shipped`, `Delivered`, `Cancelled`).
+
+*   **4. Invoice Generation & Printing:**
+    *   Automated creation of itemized invoices for sales orders.
+    *   Item breakdowns displaying unit prices, subtotal, tax calculation, and net total.
+    *   One-click print button formatted for hard-copy invoice printing or saving as PDF.
+
+*   **5. Product & Stock Catalog:**
+    *   Expanded product catalog spanning Infrastructure, Hardware, Software, and Services.
+    *   Visual stock status badges (`In Stock` vs. `Low Stock`).
+
+*   **6. Customer Directory:**
+    *   Centralized customer database storing company/customer names, emails, phone numbers, and physical addresses.
+
+*   **7. Payment Tracking Ledger:**
+    *   Dedicated payment log monitoring transaction amounts, payment methods, and statuses (`Pending`, `Paid`, `Partially Paid`, `Refunded`).
+
+*   **8. Reports & Data Export:**
+    *   Sales transaction summaries and revenue analytics.
+    *   One-click raw sales transaction export to `.csv` for offline analysis in Excel or Google Sheets.
+
+*   **9. Security Audit Logs:**
+    *   Immutable activity tracking recording user logins, order creations, and system updates with real-time timestamps.
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **HTML5 & CSS3** (Semantic markup and custom styling)
-* **Tailwind CSS (v3)** (Modern utility-first styling via CDN)
-* **JavaScript (ES6+)** (Dynamic rendering, client-side state management, and event handling)
-* **Chart.js** (Interactive data visualization graphs)
-* **Font Awesome (v6.4.0)** (UI icons)
+*   **HTML5 & CSS3** (Semantic structure and responsive layout styling)
+*   **Tailwind CSS (v3 via CDN)** (Utility-first styling with custom theme color extensions)
+*   **JavaScript (ES6+)** (Dynamic view rendering, state management, and event handling)
+*   **Chart.js (v4.4.0)** (Interactive revenue and inventory data visualizations)
+*   **Font Awesome (v6.4.0)** (Vector icons)
+*   **In-Memory State API** (Data state persistence for products, orders, customers, payments, and audit logs)
 
 ---
 
 ## 🚀 Getting Started & Installation
 
-Since the Sales Management System is built as a self-contained frontend application, **no backend server or database setup is required** to run it locally.
+Since SalesPro is built as a pure frontend single-file application, no complex build steps, Node.js installation, or backend database configurations are required to run it locally.
 
 1. **Clone or Download** the repository to your local machine:
    ```bash
-   git clone [https://github.com/your-username/sales-management-system.git](https://github.com/your-username/sales-management-system.git)
+   git clone [https://github.com/your-username/salespro-management-system.git](https://github.com/your-username/salespro-management-system.git)
+   cd salespro-management-system
