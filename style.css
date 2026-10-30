@@ -1,0 +1,34 @@
+/* Tailwind Configuration Extension */
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#2563EB',
+                    primaryHover: '#1D4ED8',
+                    lightBg: '#F4F7FB'
+                }
+            }
+        }
+    }
+</script>
+
+/* Print Styles for Invoices */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #invoice-printable, #invoice-printable * {
+        visibility: visible;
+    }
+    #invoice-printable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+        border: none;
+    }
+}
