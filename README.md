@@ -6,7 +6,7 @@ SalesPro is a fully responsive, feature-rich modern web frontend for a Sales Man
 
 ## 🌐 Live Demo & Repository
 
-*   **Live Website:** [https://asmabanahatti687-lab.github.io/sales-management-system1/](https://asmabanahatti687-lab.github.io/sales-management-system1/) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
+*   **Live Website:** [https://your-deployed-url.com](https://your-deployed-url.com) *(Replace with your Netlify, Vercel, or GitHub Pages link)*
 *   **GitHub Repository:** `https://github.com/your-username/salespro-management-system.git`
 
 ---
@@ -64,7 +64,7 @@ SalesPro is a fully responsive, feature-rich modern web frontend for a Sales Man
 
 ## 🚀 Getting Started & Installation
 
-Since SalesPro is built as a pure frontend single-file application, no complex build steps, Node.js installation, or backend database configurations are required to run it locally.
+Since SalesPro is built as a pure frontend application, no complex build steps, Node.js installation, or backend database configurations are required to run it locally.
 
 1. **Clone or Download** the repository to your local machine:
    ```bash
